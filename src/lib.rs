@@ -21,10 +21,13 @@ where
     S: Selection + Send + 'static,
 {
     fn new(interval: time::Duration) -> Result<Self, Box<dyn Error>> {
+        let mut ctx: X11ClipboardContext<S> = ClipboardProvider::new()?;
+        let init_content = ctx.get_contents()?;
+
         Ok(ClipboardMonitor {
             interval,
-            ctx: ClipboardProvider::new()?,
-            content: String::new(),
+            ctx,
+            content: init_content,
         })
     }
 
